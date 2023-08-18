@@ -3,64 +3,51 @@ const path = require('path');
 const vsctm = require('vscode-textmate');
 const oniguruma = require('vscode-oniguruma');
 
-function readFileAsync(filePath) {
+function readFile(path) {
     return new Promise((resolve, reject) => {
-        fs.readFile(filePath, (error, data) => {
-            if (error) {
-                reject(error);
-            } else {
-                resolve(data);
-            }
-        });
-    });
+        fs.readFile(path, (error, data) => error ? reject(error) : resolve(data));
+    })
 }
 
-function loadOnigurumaLibrary() {
-    const wasmPath = path.join(__dirname, './node_modules/vscode-oniguruma/release/onig.wasm');
-    const wasmBinary = fs.readFileSync(wasmPath).buffer;
-    return oniguruma.loadWASM(wasmBinary).then(() => {
-        return {
-            createOnigScanner: patterns => new oniguruma.OnigScanner(patterns),
-            createOnigString: s => new oniguruma.OnigString(s)
-        };
-    });
-}
+const wasmBin = fs.readFileSync(path.join(__dirname, './node_modules/vscode-oniguruma/release/onig.wasm')).buffer;
+const vscodeOnigurumaLib = oniguruma.loadWASM(wasmBin).then(() => {
+    return {
+        createOnigScanner(patterns) { return new oniguruma.OnigScanner(patterns); },
+        createOnigString(s) { return new oniguruma.OnigString(s); }
+    };
+});
 
-function grammarLoader(scopeName) {
-    if (scopeName === 'source.python') {
-        return readFileAsync('./Python.tmLanguage').then(data => vsctm.parseRawGrammar(data.toString()));
+const registry = new vsctm.Registry({
+    onigLib: vscodeOnigurumaLib,
+    loadGrammar: (scopeName) => {
+        if (scopeName === 'source.python') {
+            return readFile('./Python.tmLanguage').then(data => vsctm.parseRawGrammar(data.toString()))
+        }
+        console.log(`Unknown scope name: ${scopeName}`);
+        return null;
     }
-    console.log(`Unknown scope name: ${scopeName}`);
-    return null;
-}
+});
 
-function setupRegistry() {
-    return new vsctm.Registry({
-        onigLib: loadOnigurumaLibrary(),
-        loadGrammar: grammarLoader
-    });
-}
-
-function tokenizeAndLog(grammar) {
-    const sampleText = [
+function tokenizeGrammar(grammar) {
+    const text = [
         `def sayHello(name):`,
         `    return "Hello, " + name`,
         `sayHello("World")`
     ];
     let ruleStack = vsctm.INITIAL;
-
-    for (const line of sampleText) {
-        const { tokens, ruleStack: newRuleStack } = grammar.tokenizeLine(line, ruleStack);
+    for (let i = 0; i < text.length; i++) {
+        const line = text[i];
+        const lineTokens = grammar.tokenizeLine(line, ruleStack);
         console.log(`\nTokenizing line: ${line}`);
-        tokens.forEach(token => {
+        for (let j = 0; j < lineTokens.tokens.length; j++) {
+            const token = lineTokens.tokens[j];
             console.log(` - token from ${token.startIndex} to ${token.endIndex} ` +
                 `(${line.substring(token.startIndex, token.endIndex)}) ` +
                 `with scopes ${token.scopes.join(', ')}`
             );
-        });
-        ruleStack = newRuleStack;
+        }
+        ruleStack = lineTokens.ruleStack;
     }
 }
 
-const registry = setupRegistry();
-registry.loadGrammar('source.python').then(tokenizeAndLog);
+registry.loadGrammar('source.python').then(tokenizeGrammar);
