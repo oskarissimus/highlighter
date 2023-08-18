@@ -3,9 +3,6 @@ const path = require('path');
 const vsctm = require('vscode-textmate');
 const oniguruma = require('vscode-oniguruma');
 
-/**
- * Utility to read a file as a promise
- */
 function readFile(path) {
     return new Promise((resolve, reject) => {
         fs.readFile(path, (error, data) => error ? reject(error) : resolve(data));
@@ -20,12 +17,10 @@ const vscodeOnigurumaLib = oniguruma.loadWASM(wasmBin).then(() => {
     };
 });
 
-// Create a registry that can create a grammar from a scope name.
 const registry = new vsctm.Registry({
     onigLib: vscodeOnigurumaLib,
     loadGrammar: (scopeName) => {
         if (scopeName === 'source.python') {
-            // https://github.com/textmate/javascript.tmbundle/blob/master/Syntaxes/JavaScript.plist
             return readFile('./Python.tmLanguage').then(data => vsctm.parseRawGrammar(data.toString()))
         }
         console.log(`Unknown scope name: ${scopeName}`);
@@ -33,8 +28,7 @@ const registry = new vsctm.Registry({
     }
 });
 
-// Load the JavaScript grammar and any other grammars included by it async.
-registry.loadGrammar('source.python').then(grammar => {
+function tokenizeGrammar(grammar) {
     const text = [
         `def sayHello(name):`,
         `    return "Hello, " + name`,
@@ -54,36 +48,6 @@ registry.loadGrammar('source.python').then(grammar => {
         }
         ruleStack = lineTokens.ruleStack;
     }
-});
+}
 
-/* OUTPUT:
-
-Unknown scope name: source.js.regexp
-
-Tokenizing line: function sayHello(name) {
- - token from 0 to 8 (function) with scopes source.js, meta.function.js, storage.type.function.js
- - token from 8 to 9 ( ) with scopes source.js, meta.function.js
- - token from 9 to 17 (sayHello) with scopes source.js, meta.function.js, entity.name.function.js
- - token from 17 to 18 (() with scopes source.js, meta.function.js, punctuation.definition.parameters.begin.js
- - token from 18 to 22 (name) with scopes source.js, meta.function.js, variable.parameter.function.js
- - token from 22 to 23 ()) with scopes source.js, meta.function.js, punctuation.definition.parameters.end.js
- - token from 23 to 24 ( ) with scopes source.js
- - token from 24 to 25 ({) with scopes source.js, punctuation.section.scope.begin.js
-
-Tokenizing line:        return "Hello, " + name;
- - token from 0 to 1 (  ) with scopes source.js
- - token from 1 to 7 (return) with scopes source.js, keyword.control.js
- - token from 7 to 8 ( ) with scopes source.js
- - token from 8 to 9 (") with scopes source.js, string.quoted.double.js, punctuation.definition.string.begin.js
- - token from 9 to 16 (Hello, ) with scopes source.js, string.quoted.double.js
- - token from 16 to 17 (") with scopes source.js, string.quoted.double.js, punctuation.definition.string.end.js
- - token from 17 to 18 ( ) with scopes source.js
- - token from 18 to 19 (+) with scopes source.js, keyword.operator.arithmetic.js
- - token from 19 to 20 ( ) with scopes source.js
- - token from 20 to 24 (name) with scopes source.js, support.constant.dom.js
- - token from 24 to 25 (;) with scopes source.js, punctuation.terminator.statement.js
-
-Tokenizing line: }
- - token from 0 to 1 (}) with scopes source.js, punctuation.section.scope.end.js
-
-*/
+registry.loadGrammar('source.python').then(tokenizeGrammar);
