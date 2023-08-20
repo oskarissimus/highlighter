@@ -54,22 +54,14 @@ function mapScopesToClasses(scopes) {
         'meta.identifier.python': 'variable',
         "storage.type.function.python": 'special-keyword',
         "entity.name.function.python": 'function',
-        "punctuation.definition.parameters.begin.python": "bracket",
-        "punctuation.definition.parameters.end.python": "bracket",
         "variable.parameter.function.keyword.python": "parameter",
-        "string.quoted.double.single-line.python": "string",
-        "punctuation.definition.list.begin.python": "bracket",
-        "punctuation.definition.list.end.python": "bracket",
+        "string.quoted.single.python": "string",
         "keyword.control.flow.python": "keyword",
         "keyword.operator.logical.python": "special-keyword",
         "meta.function-call.generic.python": "function",
-        "punctuation.definition.arguments.begin.python": "bracket",
-        "punctuation.definition.arguments.end.python": "bracket",
-        "support.function.builtin.call.python": "builtin",
+        "support.function.builtin.python": "builtin",
         "keyword.other.python": "keyword",
         "support.type.exception.python": "exception",
-        "punctuation.definition.dictionary.begin.python": "bracket",
-        "punctuation.definition.dictionary.end.python": "bracket",
         "storage.type.class.python": "special-keyword",
         "entity.name.type.class.python": "class",
         "variable.parameter.function.language.python": "parameter",
@@ -77,14 +69,29 @@ function mapScopesToClasses(scopes) {
         "support.type.python": "type",
         "variable.language.python": "variable",
         "constant.numeric.integer.decimal.python": "number",
-        "constant.other.allcaps.python": "constant",
+        "constant.other.caps.python": "constant",
         "constant.numeric.float.python": "number",
+        "keyword.control.import.python": "keyword",
+        "meta.function-call.arguments.python": "parameter",
+        "variable.language.special.self.python": "variable",
+        "meta.attribute.python": "attribute",
+        "meta.function.python": "function",
+        "punctuation.definition.parameters.begin.python": "bracket",
+        "punctuation.definition.parameters.end.python": "bracket",
+        "punctuation.definition.list.begin.python": "bracket",
+        "punctuation.definition.list.end.python": "bracket",
+        "punctuation.definition.arguments.begin.python": "bracket",
+        "punctuation.definition.arguments.end.python": "bracket",
+        "punctuation.definition.dict.begin.python": "bracket",
+        "punctuation.definition.dict.end.python": "bracket",
+        "punctuation.definition.decorator.python": "punctuation-decorator",
+        "meta.fstring.python": "string",
+        "punctuation.separator.arguments.python": "punctuation",
+        "punctuation.separator.element.python": "punctuation",
     }
-    for (const scope of scopes) {
-        if (mapping[scope]) {
-            return mapping[scope];
-        }
-    }
+    const classes = scopes.map(scope => mapping[scope]).filter(Boolean);
+    return classes.join(' ');
+
 }
 function useTokenization(text, registry) {
     const [highlightedLines, setHighlightedLines] = useState([]);
@@ -98,6 +105,7 @@ function useTokenization(text, registry) {
                 const resultLines = [];
 
                 for (const line of lines) {
+                    console.log(ruleStack);
                     const { tokens } = grammar.tokenizeLine(line, ruleStack);
                     const tokenizedLine = tokens.map(token => {
                         console.log(token);

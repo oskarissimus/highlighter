@@ -21,26 +21,30 @@ body {
   color: var(--pink);
 }
 
+.function.type,
 .type,
 .class,
 .module,
 .exception {
   color: var(--green);
 }
-
+.function.special-keyword,
 .special-keyword {
   color: var(--dark-blue);
 }
 
+.punctuation-decorator,
 .builtin,
 .function {
   color: var(--light-yellow);
 }
 
+.parameter.bracket,
 .bracket {
   color: var(--yellow);
 }
 
+.attribute,
 .variable,
 .parameter {
   color: var(--light-blue);
@@ -56,4 +60,12 @@ body {
 
 .constant {
   color: var(--blue);
+}
+
+.parameter.string {
+  color: var(--orange);
+}
+
+.parameter.punctuation {
+  color: var(--light-gray);
 }
