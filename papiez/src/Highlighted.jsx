@@ -48,14 +48,33 @@ function useGrammarRegistry(onigLib) {
     return registry;
 }
 
-
+function mapScopesToClasses(scopes) {
+    const mapping ={
+        'keyword.control.import.import.python': 'keyword',
+        'meta.identifier.python': 'variable',
+        "storage.type.function.python": 'special-keyword',
+        "entity.name.function.python": 'function',
+        "punctuation.definition.parameters.begin.python": "bracket",
+        "punctuation.definition.parameters.end.python": "bracket",
+        "variable.parameter.function.keyword.python": "parameter",
+        "string.quoted.double.single-line.python": "string",
+        "punctuation.definition.list.begin.python": "bracket",
+        "punctuation.definition.list.end.python": "bracket",
+        // "meta.function.python": "bracket",
+        "keyword.control.flow.python": "keyword",
+        "keyword.operator.logical.python": "special-keyword",
+    }
+    for (const scope of scopes) {
+        if (mapping[scope]) {
+            return mapping[scope];
+        }
+    }
+}
 function useTokenization(text, registry) {
     const [highlightedLines, setHighlightedLines] = useState([]);
-
+    
     useEffect(() => {
-        console.log('useTokenization');
-        console.log(text);
-        console.log(registry);
+        const allScopes = [];
         if (registry && text) {
             registry.loadGrammar('source.python').then(grammar => {
                 let ruleStack = vsctm.INITIAL;
@@ -66,12 +85,13 @@ function useTokenization(text, registry) {
                     const { tokens } = grammar.tokenizeLine(line, ruleStack);
                     const tokenizedLine = tokens.map(token => {
                         const content = line.substring(token.startIndex, token.endIndex);
-                        const className = token.scopes.join(' '); // Using scopes as class names
-                        return <span className={className}>{content}</span>;
+                        allScopes.push(...token.scopes);
+                        const classes = mapScopesToClasses(token.scopes);
+                        return <span scopes={token.scopes} className={classes}>{content}</span>;
                     });
                     resultLines.push(tokenizedLine);
                 }
-
+                console.log([...new Set(allScopes)]);
                 setHighlightedLines(resultLines);
             });
         }
@@ -81,7 +101,6 @@ function useTokenization(text, registry) {
 }
 
 export function Highlighted({ children }) {
-    console.log(pythonGrammar)
     const onigLib = useOniguruma();
     const registry = useGrammarRegistry(onigLib);
     const highlightedLines = useTokenization(children, registry);
