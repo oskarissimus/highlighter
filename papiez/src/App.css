@@ -53,3 +53,7 @@ body {
 .number {
   color: var(--light-green);
 }
+
+.constant {
+  color: var(--blue);
+}

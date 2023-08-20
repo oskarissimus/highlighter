@@ -77,6 +77,8 @@ function mapScopesToClasses(scopes) {
         "support.type.python": "type",
         "variable.language.python": "variable",
         "constant.numeric.integer.decimal.python": "number",
+        "constant.other.allcaps.python": "constant",
+        "constant.numeric.float.python": "number",
     }
     for (const scope of scopes) {
         if (mapping[scope]) {
