@@ -2,10 +2,12 @@ import { Highlighted } from "./Highlighted";
 import "./App.css";
 
 function App() {
-  return (
-    <Highlighted>
-      {`
+    return (
+        <Highlighted>
+            {`
 import random
+
+PI = 3.14
 
 def quick_brown(fox="fox", lazy_dog=[]):
     if not lazy_dog:
@@ -45,9 +47,9 @@ else:
     pass
 
 `}
-    </Highlighted>
+        </Highlighted>
 
-  );
+    );
 }
 
 export default App;

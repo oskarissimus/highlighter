@@ -11,7 +11,7 @@
   --yellow: #ffd700;
   --dark-grey: #1e1e1e;
 }
-pre {
+body {
   background-color: var(--dark-grey);
   padding: 10px;
   color: var(--light-gray);
@@ -21,7 +21,10 @@ pre {
   color: var(--pink);
 }
 
-.module {
+.type,
+.class,
+.module,
+.exception {
   color: var(--green);
 }
 
@@ -29,6 +32,7 @@ pre {
   color: var(--dark-blue);
 }
 
+.builtin,
 .function {
   color: var(--light-yellow);
 }
@@ -44,4 +48,8 @@ pre {
 
 .string {
   color: var(--orange);
+}
+
+.number {
+  color: var(--light-green);
 }

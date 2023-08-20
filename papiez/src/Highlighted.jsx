@@ -60,9 +60,23 @@ function mapScopesToClasses(scopes) {
         "string.quoted.double.single-line.python": "string",
         "punctuation.definition.list.begin.python": "bracket",
         "punctuation.definition.list.end.python": "bracket",
-        // "meta.function.python": "bracket",
         "keyword.control.flow.python": "keyword",
         "keyword.operator.logical.python": "special-keyword",
+        "meta.function-call.generic.python": "function",
+        "punctuation.definition.arguments.begin.python": "bracket",
+        "punctuation.definition.arguments.end.python": "bracket",
+        "support.function.builtin.call.python": "builtin",
+        "keyword.other.python": "keyword",
+        "support.type.exception.python": "exception",
+        "punctuation.definition.dictionary.begin.python": "bracket",
+        "punctuation.definition.dictionary.end.python": "bracket",
+        "storage.type.class.python": "special-keyword",
+        "entity.name.type.class.python": "class",
+        "variable.parameter.function.language.python": "parameter",
+        "variable.parameter.function.python": "parameter",
+        "support.type.python": "type",
+        "variable.language.python": "variable",
+        "constant.numeric.integer.decimal.python": "number",
     }
     for (const scope of scopes) {
         if (mapping[scope]) {
@@ -84,6 +98,7 @@ function useTokenization(text, registry) {
                 for (const line of lines) {
                     const { tokens } = grammar.tokenizeLine(line, ruleStack);
                     const tokenizedLine = tokens.map(token => {
+                        console.log(token);
                         const content = line.substring(token.startIndex, token.endIndex);
                         allScopes.push(...token.scopes);
                         const classes = mapScopesToClasses(token.scopes);
