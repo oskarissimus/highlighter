@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const CodeParser = ({ children }) => {
+const useCodeParser = (sourceCode) => {
     const [parsedOutput, setParsedOutput] = useState('');
     const [parser, setParser] = useState(null);
     const [language, setLanguage] = useState(null);
@@ -20,10 +20,17 @@ const CodeParser = ({ children }) => {
 
     useEffect(() => {
         if (parser && language) {
-            const tree = parser.parse(children);
+            const tree = parser.parse(sourceCode);
             setParsedOutput(tree.rootNode.toString());
         }
-    }, [children, parser, language]);
+    }, [sourceCode, parser, language]);
+
+    return parsedOutput;
+};
+
+
+const CodeParser = ({ children }) => {
+    const parsedOutput = useCodeParser(children);
 
     return (
         <div>
