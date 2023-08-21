@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const CodeParser = () => {
-    const [sourceCode, setSourceCode] = useState('');
+const CodeParser = ({ children }) => {
     const [parsedOutput, setParsedOutput] = useState('');
     const [parser, setParser] = useState(null);
     const [language, setLanguage] = useState(null);
@@ -19,24 +18,15 @@ const CodeParser = () => {
         });
     }, []);
 
-    const handleParse = () => {
+    useEffect(() => {
         if (parser && language) {
-            const tree = parser.parse(sourceCode);
+            const tree = parser.parse(children);
             setParsedOutput(tree.rootNode.toString());
         }
-    };
+    }, [children, parser, language]);
 
     return (
         <div>
-            <textarea
-                value={sourceCode}
-                onChange={(e) => setSourceCode(e.target.value)}
-                placeholder="Enter your code here..."
-                rows="10"
-                cols="50"
-            ></textarea>
-            <br />
-            <button onClick={handleParse}>Parse Code</button>
             <pre>{parsedOutput}</pre>
         </div>
     );
