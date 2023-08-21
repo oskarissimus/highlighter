@@ -5,7 +5,6 @@ export const useCodeParser = (sourceCode) => {
     const [language, setLanguage] = useState(null);
 
     useEffect(() => {
-        // Initialize the web-tree-sitter library
         const Parser = require('web-tree-sitter');
         Parser.init().then(async () => {
             const newParser = new Parser();
