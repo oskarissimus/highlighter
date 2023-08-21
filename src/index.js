@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import CodeParser from './components/CodeParser';
 
+
 const App = () => {
     return (
         <CodeParser>

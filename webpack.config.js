@@ -21,6 +21,13 @@ module.exports = {
                 use: 'ts-loader',
                 exclude: /node_modules/,
             },
+            {
+                test: /\.css$/,
+                use: [
+                    'style-loader', // Injects styles into DOM
+                    'css-loader'    // Translates CSS into CommonJS modules
+                ]
+            }
         ],
     },
     plugins: [
