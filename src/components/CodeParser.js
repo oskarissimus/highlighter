@@ -1,16 +1,7 @@
 import React from 'react';
 import { useCodeParser } from '../hooks/use-code-parser';
 
-
-
-const CodeParser = ({ children }) => {
+export default function CodeParser({ children }) {
     const parsedOutput = useCodeParser(children);
-
-    return (
-        <div>
-            <pre>{parsedOutput}</pre>
-        </div>
-    );
+    return <pre>{parsedOutput}</pre>
 };
-
-export default CodeParser;
