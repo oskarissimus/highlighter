@@ -20,10 +20,22 @@ function collectLeafNodes(node: Parser.SyntaxNode): Parser.SyntaxNode[] {
 }
 
 function collectParentIdentifiers(node: Parser.SyntaxNode): string[] {
+  const brackets = /[{}()\[\]]/;
+  const operators = /[\+\-\*\/\=]/;
   const identifiers: string[] = [];
   let currentNode: Parser.SyntaxNode | null = node;
   while (currentNode) {
-    identifiers.push(currentNode.type);
+    // if (currentNode.type === "expression_statement") {
+    //   break;
+    // }
+
+    let identifier = currentNode.type;
+    if (brackets && brackets.test(identifier)) {
+      identifier = "bracket";
+    } else if (operators && operators.test(identifier)) {
+      identifier = "operator";
+    }
+    identifiers.push(identifier);
     currentNode = currentNode.parent;
   }
   return identifiers;

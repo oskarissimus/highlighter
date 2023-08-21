@@ -17,7 +17,8 @@ body {
   color: var(--light-gray);
 }
 
-.import_statement {
+.import_statement,
+.if {
   color: var(--pink);
 }
 
@@ -27,28 +28,30 @@ body {
   color: var(--green);
 }
 
-.def {
+.def,
+.not {
   color: var(--dark-blue);
 }
 
 .punctuation-decorator,
 .builtin,
-.function_definition.identifier {
+.function_definition.identifier,
+.identifier.attribute.call {
   color: var(--light-yellow);
 }
 
-.parameter.bracket,
+.function_definition.parameters.bracket,
 .bracket {
   color: var(--yellow);
 }
 
-.attribute,
-.variable,
-.parameter {
+.function_definition.parameters,
+.function_definition.block.identifier {
   color: var(--light-blue);
 }
 
-.string {
+.string,
+.function_definition.parameters.string {
   color: var(--orange);
 }
 
@@ -64,6 +67,6 @@ body {
   color: var(--orange);
 }
 
-.parameter.punctuation {
+.function_definition.parameters.operator {
   color: var(--light-gray);
 }
