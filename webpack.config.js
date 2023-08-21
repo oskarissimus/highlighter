@@ -16,6 +16,11 @@ module.exports = {
                     loader: 'babel-loader',
                 },
             },
+            {
+                test: /\.(ts|tsx)?$/,
+                use: 'ts-loader',
+                exclude: /node_modules/,
+            },
         ],
     },
     plugins: [
@@ -33,7 +38,8 @@ module.exports = {
         fallback: {
             fs: false,
             path: require.resolve("path-browserify")
-        }
+        },
+        extensions: ['.tsx', '.ts', '.js'],
     }
 
 };
