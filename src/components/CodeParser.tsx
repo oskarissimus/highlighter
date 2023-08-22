@@ -1,21 +1,15 @@
 import React from "react";
-import { useCodeParser } from "../hooks/use-code-parser";
 import "./CodeParser.css";
+import { highlightSyntax } from "../highlight-syntax";
 
 type CodeParserProps = {
   children: string;
 };
 
 const CodeParser: React.FC<CodeParserProps> = ({ children }) => {
-  const nodeInfos = useCodeParser(children);
-
   return (
     <pre>
-      {nodeInfos.map((info, index) => (
-        <span key={index} className={info.identifiers.join(" ")}>
-          {info.text}
-        </span>
-      ))}
+      <code className="code-parser">{highlightSyntax(children)}</code>
     </pre>
   );
 };
